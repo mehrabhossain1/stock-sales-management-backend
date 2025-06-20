@@ -5,6 +5,7 @@ const dbConnect = require("./config/dbConnect");
 
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
+const productRoutes = require("./routes/productRoutes");
 
 // Connect to the database
 dbConnect();
@@ -17,6 +18,7 @@ app.use(express.json());
 // routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/products", productRoutes);
 
 // start the server
 const PORT = process.env.PORT || 7002;

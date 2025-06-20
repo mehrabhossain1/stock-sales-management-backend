@@ -57,14 +57,20 @@ npm run dev
 ## 📁 Folder Structure
 
 ```bash
+├── controllers/
+│   └── productController.js
 ├── middlewares/
-│   ├── authMiddleware.js        # Verify JWT
-│   └── roleMiddleware.js        # Authorize roles
+│   ├── authMiddleware.js
+│   └── roleMiddleware.js
+├── models/
+│   └── Product.js
 ├── routes/
-│   └── userRoutes.js            # Role-protected routes
+│   ├── userRoutes.js
+│   └── productRoutes.js
 ├── .env
-├── index.js                     # Entry point
+├── index.js
 └── package.json
+
 ```
 
 ## 🔄 API Endpoints
@@ -74,6 +80,15 @@ npm run dev
 | GET    | `/admin`   | `admin`                    | Only Admin can access   |
 | GET    | `/manager` | `admin`, `manager`         | Admin or Manager access |
 | GET    | `/user`    | `admin`, `manager`, `user` | All roles can access    |
+
+### 📦 Product Endpoints (`/api/products`) – Admin Only
+
+| Method | Endpoint            | Roles Allowed | Description      |
+| ------ | ------------------- | ------------- | ---------------- |
+| GET    | `/api/products`     | `admin`       | Get all products |
+| POST   | `/api/products`     | `admin`       | Create product   |
+| PUT    | `/api/products/:id` | `admin`       | Update product   |
+| DELETE | `/api/products/:id` | `admin`       | Delete product   |
 
 ## 🛡️ Middleware Usage
 
@@ -89,6 +104,8 @@ Restricts route access to users with specified roles.
 GET /admin
 Authorization: Bearer <your_token>
 ```
+
+📌 Example: `authorizeRoles("admin")` protects routes only for admin users.
 
 ## 📄 License
 
