@@ -86,7 +86,11 @@ exports.getDueSales = async (req, res) => {
             .populate("soldBy", "name role")
             .sort({ createdAt: -1 });
 
-        res.status(200).json(dueSales);
+        res.status(200).json({
+            message: "Due sales fetched successfully",
+            count: dueSales.length,
+            dueSales,
+        });
     } catch (error) {
         console.error("❌ Failed to fetch due sales:", error);
         res.status(500).json({ error: "Failed to fetch due sales" });
