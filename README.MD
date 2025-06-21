@@ -3,6 +3,10 @@
 This is a backend API built with **Node.js**, **Express**, and **JWT** that supports **role-based access control** with 3 user roles:  
 `admin`, `manager`, and `user`.
 
+## 🌐 Deployed Link
+
+[https://stock-sales-management-backend.onrender.com](https://stock-sales-management-backend.onrender.com)
+
 ## ✅ Features
 
 -   🔐 JWT-based Authentication
@@ -58,17 +62,20 @@ npm run dev
 
 ```bash
 ├── controllers/
-│   └── productController.js
+│   ├── productController.js
+│   └── saleController.js
 ├── middlewares/
 │   ├── authMiddleware.js
 │   └── roleMiddleware.js
 ├── models/
-│   └── Product.js
+│   ├── Product.js
+│   └── Sale.js
 ├── routes/
 │   ├── userRoutes.js
-│   └── productRoutes.js
+│   ├── productRoutes.js
+│   └── saleRoutes.js
 ├── .env
-├── index.js
+├── src/index.js
 └── package.json
 
 ```
@@ -90,6 +97,14 @@ npm run dev
 | PUT    | `/api/products/:id` | `admin`       | Update product   |
 | DELETE | `/api/products/:id` | `admin`       | Delete product   |
 
+### 💸 Sales Endpoints (`/api/sales`) – Admin and Manager
+
+| Method | Endpoint          | Roles Allowed      | Description                          |
+| ------ | ----------------- | ------------------ | ------------------------------------ |
+| POST   | `/api/sales`      | `admin`, `manager` | Record a sale                        |
+| GET    | `/api/sales`      | `admin`, `manager` | Get all sales (role-based filtering) |
+| GET    | `/api/sales/dues` | `admin`, `manager` | Get all due (unpaid) sales           |
+
 ## 🛡️ Middleware Usage
 
 ✅ `verifyToken`
@@ -97,6 +112,10 @@ Checks for a valid JWT in the request header.
 
 ✅ `authorizeRoles(...allowedRoles)`
 Restricts route access to users with specified roles.
+
+🔁 Sales are linked to `product` and `soldBy` using Mongoose `.populate()`  
+📉 Product stock is automatically reduced on each sale  
+🧾 Dues are calculated by `total - paid`
 
 ## 📦 Example Request (using token)
 
