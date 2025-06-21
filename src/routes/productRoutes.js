@@ -12,11 +12,16 @@ const verifyToken = require("../middlewares/authMiddleware");
 const authorizeRoles = require("../middlewares/roleMiddleware");
 
 // All routes below require admin access
-router.use(verifyToken, authorizeRoles("admin"));
+// router.use(verifyToken, authorizeRoles("admin"));
 
-router.get("/", authorizeRoles("admin", "manager"), getAllProducts);
-router.post("/", createProduct);
-router.put("/:id", updateProduct);
-router.delete("/:id", deleteProduct);
+router.get(
+    "/",
+    verifyToken,
+    authorizeRoles("admin", "manager"),
+    getAllProducts
+);
+router.post("/", verifyToken, authorizeRoles("admin"), createProduct);
+router.put("/:id", verifyToken, authorizeRoles("admin"), updateProduct);
+router.delete("/:id", verifyToken, authorizeRoles("admin"), deleteProduct);
 
 module.exports = router;
