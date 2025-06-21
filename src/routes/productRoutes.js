@@ -14,7 +14,7 @@ const authorizeRoles = require("../middlewares/roleMiddleware");
 // All routes below require admin access
 router.use(verifyToken, authorizeRoles("admin"));
 
-router.get("/", getAllProducts);
+router.get("/", authorizeRoles("admin", "manager"), getAllProducts);
 router.post("/", createProduct);
 router.put("/:id", updateProduct);
 router.delete("/:id", deleteProduct);
