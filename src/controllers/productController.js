@@ -3,14 +3,30 @@ const Product = require("../models/productModel");
 // GET all products
 exports.getAllProducts = async (req, res) => {
     try {
-        const products = await Product.find().sort({ createdAt: -1 });
-        res.json({
+        const { search = "", page = 1, limit = 10 } = req.query;
+
+        const query = {
+            name: { $regex: search, $options: "i" },
+        };
+
+        const total = await Product.countDocuments(query);
+
+        const products = await Product.find(query)
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(Number(limit));
+
+        res.status(200).json({
             message: "Products fetched successfully",
             count: products.length,
+            total,
+            page: Number(page),
+            limit: Number(limit),
             products,
         });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to fetch products" });
+    } catch (err) {
+        console.error("Get products failed:", err);
+        res.status(500).json({ message: "Server error" });
     }
 };
 

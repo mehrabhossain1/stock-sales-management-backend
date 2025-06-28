@@ -16,8 +16,8 @@ const authorizeRoles = require("../middlewares/roleMiddleware");
 
 router.get(
     "/",
-    verifyToken,
-    authorizeRoles("admin", "manager"),
+    // verifyToken,
+    // authorizeRoles("admin", "manager"),
     getAllProducts
 );
 router.post("/", verifyToken, authorizeRoles("admin"), createProduct);
