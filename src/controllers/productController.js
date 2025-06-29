@@ -47,7 +47,19 @@ exports.getSingleProduct = async (req, res) => {
 
 // POST create product
 exports.createProduct = async (req, res) => {
-    const { name, sku, description, price, quantity } = req.body;
+    const {
+        name,
+        sku,
+        description,
+        price,
+        quantity,
+        images,
+        category,
+        brand,
+        tags,
+        isFeatured,
+        isHot,
+    } = req.body;
 
     try {
         const newProduct = new Product({
@@ -56,8 +68,13 @@ exports.createProduct = async (req, res) => {
             description,
             price,
             quantity,
-            createdBy: req.user.id, // Assuming req.user is set by auth middleware
-            // If you have a user ID in the request, you can use it to set createdBy
+            images,
+            category,
+            brand,
+            tags,
+            isFeatured,
+            isHot,
+            createdBy: req.user.id,
         });
 
         console.log(newProduct);
@@ -68,6 +85,7 @@ exports.createProduct = async (req, res) => {
             product: savedProduct,
         });
     } catch (error) {
+        console.error(error);
         res.status(400).json({ error: "Product creation failed" });
     }
 };
@@ -99,5 +117,69 @@ exports.deleteProduct = async (req, res) => {
         res.json({ message: "Product deleted successfully" });
     } catch (error) {
         res.status(400).json({ error: "Product deletion failed" });
+    }
+};
+
+// Review
+// Add this in productController.js for quick testing
+exports.addReview = async (req, res) => {
+    const { productId } = req.params;
+    const { rating, comment } = req.body;
+
+    if (!rating || rating < 1 || rating > 5) {
+        return res
+            .status(400)
+            .json({ message: "Rating must be between 1 and 5" });
+    }
+
+    try {
+        const product = await Product.findById(productId);
+
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        const review = {
+            user: req.user.id,
+            rating,
+            comment,
+        };
+
+        product.reviews.push(review);
+
+        await product.save();
+
+        res.status(201).json({
+            message: "Review added successfully",
+            review,
+        });
+    } catch (error) {
+        console.error("Add review error:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+// GET /products/:productId/reviews
+exports.getReviews = async (req, res) => {
+    const { productId } = req.params;
+
+    try {
+        const product = await Product.findById(productId).populate(
+            "reviews.user",
+            "username email"
+        ); // Populate user info in reviews (optional)
+
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        res.status(200).json({
+            message: "Reviews fetched successfully",
+            count: product.reviews.length,
+            reviews: product.reviews,
+        });
+    } catch (error) {
+        console.error("Get reviews error:", error);
+        res.status(500).json({ message: "Server error" });
     }
 };

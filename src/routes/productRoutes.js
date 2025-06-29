@@ -7,6 +7,8 @@ const {
     updateProduct,
     deleteProduct,
     getSingleProduct,
+    addReview,
+    getReviews,
 } = require("../controllers/productController");
 
 const verifyToken = require("../middlewares/authMiddleware");
@@ -26,5 +28,8 @@ router.get("/:id", getSingleProduct);
 router.post("/", verifyToken, authorizeRoles("admin"), createProduct);
 router.put("/:id", verifyToken, authorizeRoles("admin"), updateProduct);
 router.delete("/:id", verifyToken, authorizeRoles("admin"), deleteProduct);
+
+router.post("/:productId/reviews", verifyToken, addReview);
+router.get("/:productId/reviews", getReviews);
 
 module.exports = router;
