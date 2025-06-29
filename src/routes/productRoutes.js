@@ -6,6 +6,7 @@ const {
     createProduct,
     updateProduct,
     deleteProduct,
+    getSingleProduct,
 } = require("../controllers/productController");
 
 const verifyToken = require("../middlewares/authMiddleware");
@@ -20,6 +21,8 @@ router.get(
     // authorizeRoles("admin", "manager"),
     getAllProducts
 );
+router.get("/:id", getSingleProduct);
+
 router.post("/", verifyToken, authorizeRoles("admin"), createProduct);
 router.put("/:id", verifyToken, authorizeRoles("admin"), updateProduct);
 router.delete("/:id", verifyToken, authorizeRoles("admin"), deleteProduct);

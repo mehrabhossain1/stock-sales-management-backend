@@ -30,6 +30,21 @@ exports.getAllProducts = async (req, res) => {
     }
 };
 
+// GET single product
+exports.getSingleProduct = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const product = await Product.findById(id);
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+        res.status(200).json({ product });
+    } catch (error) {
+        console.error("Get product failed:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
 // POST create product
 exports.createProduct = async (req, res) => {
     const { name, sku, description, price, quantity } = req.body;
